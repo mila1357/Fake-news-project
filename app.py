@@ -6,10 +6,10 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 
-with open('ML/Model.pkl', 'rb') as f:
+with open('./Model.pkl', 'rb') as f:
     model = pickle.load(f)
 
-with open('ML/tfidf_vectorizer.pkl', 'rb') as f:
+with open('./tfidf_vectorizer.pkl', 'rb') as f:
     vectorizer = pickle.load(f)
 
 @app.route('/')
@@ -18,15 +18,19 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    text = request.form.get('text')
-    if text is not None:
-        text_transformed = vectorizer.transform([text])
+    #Handle JSON Input for Predict Endpoint
+    data  = request.get_json()
 
-        prediction = model.predict(text_transformed)[0]
-
-        return jsonify({'prediction': int(prediction)})
-    else:
-        return jsonify({'error': 'Input text not provided.'})
+    if not data or 'text' not in data:
+        return jsonify({'error': 'Input text not provided.'}), 400
+    
+    text = data['text']
+    print(f"Input text: {text}")
+    text_transformed = vectorizer.transform([text])
+    prediction = model.predict(text_transformed)[0]
+    print(f"Prediction: {prediction}")
+    return jsonify({'prediction': int(prediction)})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000) #Flask Server Configuration
+

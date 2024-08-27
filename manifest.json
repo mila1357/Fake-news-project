@@ -4,7 +4,7 @@
   "description": "A Chrome extension that predicts whether news articles are likely to be Fake or Not",
   "version": "1.0",
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "static/popup.html"
   },
   "permissions": [
     "activeTab",
@@ -12,7 +12,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["popup.js"],
+      "resources": ["static/popup.js"],
       "matches": ["http://*/*", "https://*/*"]
     }
   ]
